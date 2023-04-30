@@ -9,7 +9,9 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public record ReservationServiceManager(List<ReservationService> reservationServices) {
+public class ReservationServiceManager {
+
+  private final List<ReservationService> reservationServices;
 
   public ReservationService findService(ReservationCommand reservationCommand) {
     return reservationServices.stream()

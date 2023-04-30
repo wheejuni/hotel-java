@@ -1,5 +1,7 @@
-package com.hotelJava.accommodation.controller;
+package com.hotelJava.accommodation.adapter.web;
 
+import com.hotelJava.accommodation.application.port.FindAccommodationQuery;
+import com.hotelJava.accommodation.application.port.SaveAccommodationUseCase;
 import com.hotelJava.accommodation.domain.AccommodationType;
 import com.hotelJava.accommodation.dto.CreateAccommodationRequestDto;
 import com.hotelJava.accommodation.dto.CreateAccommodationResponseDto;
@@ -28,6 +30,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/accommodations")
 public class AccommodationController {
 
+  private final SaveAccommodationUseCase saveAccommodationUseCase;
+
+  private final FindAccommodationQuery findAccommodationQuery;
+
   private final AccommodationService accommodationService;
 
   @GetMapping("/{type}/{firstLocation}/{secondLocation}")
@@ -41,14 +47,14 @@ public class AccommodationController {
       @RequestParam(required = false, defaultValue = "#{T(java.time.LocalDate).now().plusDays(1)}")
           LocalDate checkOutDate,
       @RequestParam(required = false, defaultValue = "2") int guestCount) {
-    return accommodationService.findAccommodations(
+    return findAccommodationQuery.findAccommodations(
         type, firstLocation, secondLocation, name, checkInDate, checkOutDate, guestCount);
   }
 
   @PostMapping
   public CreateAccommodationResponseDto createAccommodation(
       @Valid @RequestBody CreateAccommodationRequestDto createAccommodationRequestDto) {
-    return accommodationService.saveAccommodation(createAccommodationRequestDto);
+    return saveAccommodationUseCase.saveAccommodation(createAccommodationRequestDto);
   }
 
   @PutMapping("/{encodedAccommodationId}")
